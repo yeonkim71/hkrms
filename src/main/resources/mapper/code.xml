@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hkilbo.hkrms.customer.mapper.Code2Mapper">
+    <!-- ID관리: ID Creation Rule 수정 -->
+    <update id="SYS0005U" parameterType="hashMap">
+        update F_IDCreationRule
+        set
+            lastSeq = lastSeq + interval
+        where
+            companyID = '000001'
+          and bizID = #{seqDiv}
+          and useYN = 'Y'
+        /* [ SYS0005U]  ID관리: ID Creation Rule 수정 */
+    </update>
+
+    <select id="SYS0006S" parameterType="hashMap" resultType="hashMap">
+        select
+            case when IDType = 'number' then CONVERT(varchar,lastSeq)
+                 else
+                         ISNULL(prefix,'')+
+                         SUBSTRING(IDCreationRule,1,LEN(IDCreationRule)-LEN(CONVERT(varchar,lastSeq)))+
+                         CONVERT(varchar,lastSeq)+
+                         ISNULL(suffix,'')
+                end as "seqID"
+        from
+            F_IDCreationRule
+        where
+            companyID = '000001'
+          and bizID = #{seqDiv}
+          and useYN = 'Y'
+        /* [ SYS0006S ] ID관리: ID Creation Rule 조회 */
+    </select>
+</mapper>

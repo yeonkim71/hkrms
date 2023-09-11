@@ -1,0 +1,551 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.hkilbo.hkrms.customer.mapper.Customer2Mapper">
+
+    <insert id="CMP010104I_ACCOUNT" parameterType="java.util.HashMap">
+        /*[CMP010104I_ACCOUNT] INSERT INTO [dbo].[Ct_CustAccount]*/
+        INSERT INTO [dbo].[Ct_CustAccount]
+        ([CompCd]
+        ,[CustCd]
+        ,[VrAcntNo]
+        ,[CmBankCd]
+        ,[AcntNo]
+        ,[SaverName]
+        ,[RegiUser]
+        ,[RegiDate]
+        ,[ModifyUser]
+        ,[ModifyDate]
+        ,[VrAcntYn]
+        ,CmPayTermCd
+        )
+        VALUES
+        (#{CompCd}
+        ,#{CustCd}
+        ,#{VrAcntNo}
+        ,#{CmBankCd}
+        ,dbo.fn_EncryptString(#{AcntNo})
+        ,#{SaverName}
+        ,#{RegiUser}
+        ,GETDATE()
+        ,#{ModifyUser}
+        ,GETDATE()
+        ,#{VrAcntYn}
+        ,#{CmPayTermCd}
+        )
+    </insert>
+
+    <insert id="CMP010104U_ACCOUNT" parameterType="java.util.HashMap">
+        /*[CMP010104U_ACCOUNT] UPDATE [dbo].[Ct_CustAccount]*/
+        UPDATE [dbo].[Ct_CustAccount]
+        SET VrAcntYn     = 'N'
+                , VrAcntNo     = ''
+                , CmPayTermCd = #{CmPayTermCd}
+                , [ModifyUser] = #{ModifyUser}
+                , [ModifyDate] = GETDATE()
+        WHERE [CompCd]     = #{CompCd}
+          AND VrAcntNo     = #{VrAcntNo}
+    </insert>
+
+    <insert id="CMP010104I_LOG" parameterType="java.util.HashMap">
+        /*[CMP010104I_LOG] INSERT INTO [dbo].[Ct_CustIFLog]*/
+        INSERT INTO [dbo].[Ct_CustIFLog]
+        ([SendSeq]
+            ,[CompCd]
+            ,[CustCd]
+            ,[ERPCustCd]
+            ,[ERPVendorCd]
+            ,[CustGu]
+            ,[CustName1]
+            ,[CustName2]
+            ,[BizNo]
+            ,[CorpNo]
+            ,[PersonNo]
+            ,[CompType]
+            ,[CompKind]
+            ,[RepName]
+            ,[TelNo]
+            ,[FaxNo]
+            ,[ZipNo]
+            ,[Addr]
+            ,[EmailAddr]
+            ,[RecvName]
+            ,[BankCd]
+            ,[AcntNo]
+            ,[SaverName]
+            ,[VrAcntYN]
+            ,[VrAcntCopyYN]
+            ,[VrCopyCustCd]
+            ,[VrAcntNo]
+            ,[TYPE]
+            ,[MESSAGE]
+            ,[RegiUser]
+            ,[RegiDate]
+            ,CustType
+            ,PayTerm
+            ,ZipAddr
+        )
+        VALUES
+            ((SELECT ISNULL(MAX(SendSeq),0)+1 FROM Ct_CustIFLog)
+                ,#{CompCd}
+                ,#{CustCd}
+                ,#{ERPCustCd}
+                ,#{ERPVendorCd}
+                ,#{CustGu}
+                ,#{CustName1}
+                ,#{CustName2}
+                ,#{BizNo}
+                ,#{CorpNo}
+                ,dbo.fn_EncryptString(#{PersonNo})
+                ,#{CompType}
+                ,#{CompKind}
+                ,#{RepName}
+                ,#{TelNo}
+                ,#{FaxNo}
+                ,#{ZipNo}
+                ,#{Addr}
+                ,#{EmailAddr}
+                ,#{RecvName}
+                ,#{BankCd}
+                ,dbo.fn_EncryptString(#{AcntNo})
+                ,#{SaverName}
+                ,#{VrAcntYN}
+                ,#{VrAcntCopyYN}
+                ,#{VrCopyCustCd}
+                ,#{VrAcntNo}
+                ,#{TYPE}
+                ,#{MESSAGE}
+                ,#{RegiUser}
+                ,GETDATE()
+                ,#{CustType}
+                ,#{PayTerm}
+                ,#{ZipAddr}
+            )
+    </insert>
+
+    <select id="CMP010104_Attrib01_CodeName" parameterType="java.util.Map" resultType="hashMap">
+        /*[CMP010104_Attrib01_CodeName] */
+        select attrib01 as codeName from f_code where companyID = '000001' and codeDiv = #{codeDiv} and comCode = #{comCode}
+    </select>
+
+    <select id="CMP010104_CodeName" parameterType="java.util.Map" resultType="hashMap">
+        /*[CMP010104_CodeName] */
+        select dbo.fn_getCodeName('000001',#{codeDiv},#{comCode}) as codeName
+    </select>
+
+    <!-- 은행 sap 코드  -->
+    <select id="COM010104S_Bank" parameterType="java.util.Map" resultType="hashMap">
+        /*[COM010104S_Bank] 은행 sap 코드 */
+        SELECT attrib01 IFCode
+        FROM F_Code
+        WHERE codeDiv ='020'
+          AND comcode= #{CmBankCd}
+    </select>
+
+    <delete id="CMP010104D_ACCOUNT" parameterType="java.util.HashMap">
+        /*[CMP010104D_ACCOUNT] DELETE FROM [dbo].[Ct_CustAccount*/
+        DELETE FROM [dbo].[Ct_CustAccount]
+        WHERE CustCd = #{CustCd}
+    </delete>
+
+    <update id="CMP010104U" parameterType="java.util.HashMap">
+        /* query_system.xml  CMP010104U UPDATE [dbo].[Ct_CustCode*/
+        UPDATE [dbo].[Ct_CustCode]
+        SET [CustName1] = #{CustName1}
+                ,[CustName2] = #{CustName2}
+                ,[CustGu]    = #{CustGu}
+                ,[BizNo]     = #{BizNo}
+                ,[CorpNo]    = #{CorpNo}
+                ,[PersonNo]  = dbo.fn_EncryptString(#{PersonNo})
+                ,[CompType]  = #{CompType}
+                ,[CompKind]  = #{CompKind}
+                ,[RepName]   = #{RepName}
+                ,[TelNo]     = #{TelNo}
+                ,[FaxNo]     = #{FaxNo}
+                ,[ZipNo]     = #{ZipNo}
+                ,[ZipAddr]   = #{ZipAddr}
+                ,[Addr]      = #{Addr}
+                ,[EmailAddr] = #{EmailAddr}
+                ,[RecvName]  = #{RecvName}
+                ,[Desc]        = #{Desc}
+                ,[UseYN]       = #{UseYN}
+                ,[ERPCustCd]  = #{ERPCustCd}
+                ,[ERPVendorCd]= #{ERPVendorCd}
+                ,[ModifyUser] = #{ModifyUser}
+                ,[ModifyDate] = GETDATE()
+                ,[VrCopyCustCd]= #{VrCopyCustCd}
+                ,[CmCustTypeCd]= #{CmCustTypeCd}
+        WHERE
+            CustCd = #{CustCd}
+    </update>
+
+    <insert id="CMP010104I" parameterType="java.util.HashMap">
+        /* query_system.xml  CMP010104I INSERT INTO [dbo].[Ct_CustCode]*/
+        INSERT INTO [dbo].[Ct_CustCode]
+        ([CustCd]
+            ,[CustName1]
+            ,[CustName2]
+            ,[CustGu]
+            ,[BizNo]
+            ,[CorpNo]
+            ,[PersonNo]
+            ,[CompType]
+            ,[CompKind]
+            ,[RepName]
+            ,[TelNo]
+            ,[FaxNo]
+            ,[ZipNo]
+            ,[ZipAddr]
+            ,[Addr]
+            ,[EmailAddr]
+            ,[RecvName]
+            ,[ERPCustCd]
+            ,[ERPVendorCd]
+            ,[Desc]
+            ,[UseYN]
+            ,[RegiUser]
+            ,[RegiDate]
+            ,[ModifyUser]
+            ,[ModifyDate]
+            ,[VrCopyCustCd]
+            ,[CmCustTypeCd]
+        )
+        VALUES
+            (#{CustCd}
+                ,#{CustName1}
+                ,#{CustName2}
+                ,#{CustGu}
+                ,#{BizNo}
+                ,#{CorpNo}
+                ,dbo.fn_EncryptString(#{PersonNo})
+                ,#{CompType}
+                ,#{CompKind}
+                ,#{RepName}
+                ,#{TelNo}
+                ,#{FaxNo}
+                ,#{ZipNo}
+                ,#{ZipAddr}
+                ,#{Addr}
+                ,#{EmailAddr}
+                ,#{RecvName}
+                ,#{ERPCustCd}
+                ,#{ERPVendorCd}
+                ,#{Desc}
+                ,#{UseYN}
+                ,#{RegiUser}
+                ,GETDATE()
+                ,#{ModifyUser}
+                ,GETDATE()
+                ,#{VrCopyCustCd}
+                ,#{CmCustTypeCd}
+            )
+    </insert>
+
+
+    <select id="CMP010104S_ACCOUNT" parameterType="hashMap" resultType="hashMap">
+        /* query_system.xml  CMP010104S_ACCOUNT 계좌번호 테이블 조회*/
+        SELECT
+            dbo.fn_getCompName(T1.[CompCd])                   as CompCdName
+             ,ISNULL(T2.[VrAcntYn],'N')                         AS VrAcntYn
+             ,ISNULL(T2.[VrAcntCopyYn],'N')                     AS VrAcntCopyYn
+             ,T2.[VrAcntNo]                                     AS VrAcntNo
+             ,CASE WHEN ISNULL(T2.[CmBankCd],'')='' THEN '(선택안함)'
+                   ELSE  dbo.fn_getCodeName('000001','020', T2.[CmBankCd])
+            END                                               as CmBankName
+             ,T2.[SaverName]                                    AS SaverName
+             ,dbo.fn_DecryptString(T2.[AcntNo])                 AS AcntNo
+            /* hidden */
+             ,ISNULL(T2.[CustCd],#{CustCd})                      AS CustCd
+             ,T2.[RegiUser]                                     AS RegiUser
+             ,T2.[RegiDate]                                     AS RegiDate
+             ,T2.[ModifyUser]                                   AS ModifyUser
+             ,T2.[ModifyDate]                                   AS ModifyDate
+             ,T2.[CmBankCd]                                     AS CmBankCd
+             ,T1.[CompCd]                                       AS CompCd
+             ,CASE WHEN ISNULL(T2.[CmPayTermCd],'')='' THEN '(선택안함)'
+                   ELSE  dbo.fn_getCodeName('000001','083', T2.[CmPayTermCd])
+            END                                               as CmPayTermName
+             ,ltrim(rtrim(t2.CmPayTermCd)) as CmPayTermCd
+        FROM [dbo].[Ct_CompCode] T1
+            LEFT OUTER JOIN  [dbo].[Ct_CustAccount] T2
+        ON T1.CompCd = T2.CompCd
+            AND T2.CustCd = #{CustCd}
+        WHERE 1= 1
+          AND T1.SysUseYN =  'Y' /**P*/
+        ORDER BY T1.RegiDate
+    </select>
+
+    <select id="COM050107S" parameterType="hashMap" resultType="hashMap">
+
+    /*[COM050107S] 공통기능 : 거래처 팝업조회 */
+    SELECT
+    CustName1	as CustName1,
+    CustName2	as CustName2,
+    CustGu		as CustGu,
+    BizNo		as BizNo,
+    RepName		as RepName,
+    CompType	as CompType,
+    ZipAddr +' '+Addr		as Addr,
+    CustCd		as CustCd,
+    dbo.fn_DecryptString(PersonNo)	as PersonNo,
+    dbo.fn_getCodeName('000001','A05', CustGu) as CustGuName,
+    UseYN   as UseYN
+    FROM
+    Ct_CustCode
+    WHERE 1=1
+        <if test="C_Type != null and C_Type.equals('Name') and C_CustName != null and !C_CustName.equals('')">
+            and
+            ( CustName1 like concat('%', #{C_CustName}, '%')
+                OR CustName2 like concat('%', #{C_CustName}, '%')
+            )
+        </if>
+        <if test="C_Type != null and C_Type.equals('Code') and C_CustCd != null and !C_CustCd.equals('')">
+            and  CustCd like concat('%', #{C_CustCd}, '%')
+        </if>
+        <if test="C_Type != null and C_Type.equals('BizNo') and C_BizNo != null and !C_BizNo.equals('')">
+            and  BizNo like concat('%', #{C_BizNo}, '%')
+        </if>
+        <if test="C_BizNo != null and !C_BizNo.equals('')">
+            and  BizNo = #{C_BizNo}
+        </if>
+        <if test="C_PersonNo != null and !C_PersonNo.equals('')">
+            AND dbo.fn_DecryptString(PersonNo) = #{C_PersonNo}
+        </if>
+        <if test="C_CustName != null and !C_CustName.equals('')">
+            and
+            ( CustName1 like concat('%', #{C_CustName}, '%')
+            OR CustName2 like concat('%', #{C_CustName}, '%')
+            )
+        </if>
+
+        order by CustCd asc
+
+    </select>
+
+    <select id="CMP0100301S" parameterType="hashMap" resultType="hashMap">
+    /* [CMP0100301S] (삭제예정) 코드관리: 코드목록 조회 */
+    select
+    codeDiv as "codeDiv",
+    comCode as "comCode",
+    codeName as "codeName",
+    codeDesc as "codeDesc",
+    seq as "seq",
+    remark as "remark",
+    useYN as "useYN",
+    attrib01 as "attrib01",
+    attrib02 as "attrib02",
+    attrib03 as "attrib03",
+    attrib04 as "attrib04",
+    attrib05 as "attrib05",
+    attrib06 as "attrib06",
+    attrib07 as "attrib07",
+    attrib08 as "attrib08",
+    attrib09 as "attrib09",
+    attrib10 as "attrib10",
+    attrib11 as "attrib11",
+    attrib12 as "attrib12"
+    from
+    F_Code
+    where
+        companyID = #{companyID}
+        and codeDiv = #{codeDiv}
+        <if test="useYN == null or useYN.equals('')">
+            and useYN = 'Y'
+        </if>
+        and activeFlg = 'U'
+        <if test="codeName != null and !codeName.equals('')">
+        and codeName like concat('%', #{codeName}, '%')
+        </if>
+        <if test="comCode != null and !comCode.equals('')">
+            and comCode = #{comCode}
+        </if>
+        <if test="attrib01 != null and !attrib01.equals('')">
+            and attrib01 = #{attrib01}
+        </if>
+        <if test="attrib02 != null and !attrib02.equals('')">
+            and attrib01 = #{attrib02}
+        </if>
+
+    order by
+    seq,
+    codeName
+    </select>
+
+    <select id="CMP010101S" parameterType="hashMap" resultType="hashMap">
+        select
+        CompCd
+        ,CompName
+        ,dbo.fn_getBiznoWithFormat(BizNo) as BizNo
+        ,CompType
+        ,CompKind
+        ,CompAddr
+        ,RepName
+        ,SysUseYN
+        ,ExtReqYN
+        ,UseYN
+        ,dbo.fn_getUserNameById(RegiUser) as RegiUser
+        ,RegiDate
+        ,dbo.fn_getUserNameById(ModifyUser) as ModifyUser
+        ,ModifyDate
+        ,'N' AS VrAcntYn
+        ,'N' AS VrAcntCopyYn
+        from
+        Ct_CompCode
+        where
+        1=1
+        <if test="UseYN != null and !UseYN.equals('')">
+            and UseYN = #{UseYN}
+        </if>
+        <if test="ExtReqYN != null and !ExtReqYN.equals('')">
+           and UseYN = #{ExtReqYN}
+        </if>
+        <if test="SysUseYN != null and !SysUseYN.equals('')">
+            and SysUseYN = #{SysUseYN}
+        </if>
+
+        ORDER BY RegiDate
+
+    </select>
+
+    <select id="CMP010104S" parameterType="hashMap" resultType="com.hkilbo.hkrms.customer.vo.CustCdVo">
+
+        SELECT
+                ROW_NUMBER() OVER(ORDER BY (SELECT 1)) AS rownum
+             ,CustCd
+             ,CustName1
+             ,CustName2
+             ,dbo.fn_getCodeName('000001','A05', t1.CustGu) as CustGuName
+             ,CustGu
+
+             ,dbo.fn_getBiznoWithFormat(BizNo) AS BizNo
+             ,RepName
+             ,CompType
+             ,CompKind
+             ,ISNULL(ZipAddr,'')+' '+ISNULL(Addr,'')  AS Addrs
+             ,ERPVendorCd
+             ,ERPCustCd
+             ,dbo.fn_getUserNameById(RegiUser) as RegiUser
+             ,RegiDate
+             ,dbo.fn_getUserNameById(ModifyUser) as ModifyUser
+             ,ModifyDate
+             ,CorpNo
+             ,dbo.fn_getPersonnoWithFormat(dbo.fn_DecryptString(PersonNo)) AS PersonNo
+             ,TelNo
+             ,FaxNo
+             ,ZipNo
+             ,ZipAddr
+             ,EmailAddr
+             ,RecvName
+             ,[Desc]
+             ,UseYN
+             ,CustGu
+             ,VrCopyCustCd
+             ,dbo.fn_getCustName1(VrCopyCustCd) as VrCopyCustName
+             ,Addr
+             ,dbo.fn_getCodeName('000001','082', t1.CmCustTypeCd) as CmCustTypeCdName /*거래처유형 추가 2016.07.06*/
+             ,ltrim(rtrim(t1.CmCustTypeCd)) as  CmCustTypeCd/*거래처유형 추가 2016.07.06*/
+
+             FROM Ct_CustCode t1
+
+        WHERE
+            1=1
+        <if test="C_CustGu != null and !C_CustGu.equals('')">
+             and t1.CustGu =  #{C_CustGu}
+        </if>
+
+        <if test="C_CustCd != null and !C_CustCd.equals('')">
+             and t1.CustCd = #{C_CustCd}
+        </if>
+
+        <if test="C_CustName1 != null and !C_CustName1.equals('')">
+            and (t1.CustName1 like concat('%', #{C_CustName1}, '%')
+                OR t1.CustName2 like concat('%', #{C_CustName1}, '%')
+            )
+        </if>
+
+        <if test="C_BizNo != null and !C_BizNo.equals('')">
+            and t1.BizNo like concat('%', #{C_BizNo}, '%')
+        </if>
+
+        <if test="C_RepName != null and !C_RepName.equals('')">
+            and t1.RepName like concat('%', #{C_RepName}, '%')
+        </if>
+
+        <if test="C_PersonNo != null and C_PersonNo != ''">
+            and dbo.fn_DecryptString(t1.PersonNo) =  #{C_PersonNo}
+        </if>
+
+        <if test="C_SapYn != null and C_SapYn.equals('Y')">
+            and t1.ERPVendorCd &lt;&gt; ''
+        </if>
+
+        <if test="C_SapYn != null and C_SapYn.equals('N')">
+            and t1.ERPVendorCd = ''
+        </if>
+
+        order by t1.CustCd asc
+
+    </select>
+
+    <select id="CMP010104S2" parameterType="hashMap" resultType="hashMap">
+        SELECT [CustCd]
+        ,[CustName1]
+        ,[CustName2]
+        ,dbo.fn_getCodeName('000001','A05', t1.CustGu) as CustGuName
+        ,dbo.fn_getBiznoWithFormat(BizNo) AS BizNo
+        ,[RepName]
+        ,[CompType]
+        ,[CompKind]
+        ,[ZipAddr]+' '+[Addr]  AS Addrs
+        ,[ERPVendorCd]
+        ,[ERPCustCd]
+        ,dbo.fn_getUserNameById(RegiUser) as RegiUser
+        ,RegiDate
+        ,dbo.fn_getUserNameById(ModifyUser) as ModifyUser
+        ,[ModifyDate]
+        ,[CorpNo]
+        ,dbo.fn_getPersonnoWithFormat(dbo.fn_DecryptString(PersonNo)) AS PersonNo
+        ,[TelNo]
+        ,[FaxNo]
+        ,[ZipNo]
+        ,[ZipAddr]
+        ,[EmailAddr]
+        ,[RecvName]
+        ,[Desc]
+        ,[UseYN]
+        ,[CustGu]
+        ,[VrCopyCustCd]
+        ,dbo.fn_getCustName1([VrCopyCustCd]) as VrCopyCustName
+        ,[Addr]
+        ,dbo.fn_getCodeName('000001','082', t1.CmCustTypeCd) as CmCustTypeCdName /*거래처유형 추가 2016.07.06*/
+        ,ltrim(rtrim(t1.CmCustTypeCd)) as  CmCustTypeCd/*거래처유형 추가 2016.07.06*/
+
+        ,(SELECT VrAcntNo FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ10') VrAcntNo_KZ10
+        ,(SELECT dbo.fn_getCodeName('000001', '020', CmBankCd) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ10') CmBankCd_KZ10
+        ,(SELECT SaverName FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ10') SaverName_KZ10
+        ,(SELECT dbo.fn_decryptString(AcntNo) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ10') AcntNo_KZ10
+        ,(SELECT dbo.fn_getCodeName('000001', '083', CmPayTermCd) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ10') CmPayTermCd_KZ10
+
+        ,(SELECT VrAcntNo FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ20') VrAcntNo_KZ10
+        ,(SELECT dbo.fn_getCodeName('000001', '020', CmBankCd) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ20') CmBankCd_KZ20
+        ,(SELECT SaverName FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ20') SaverName_KZ20
+        ,(SELECT dbo.fn_decryptString(AcntNo) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ20') AcntNo_KZ20
+        ,(SELECT dbo.fn_getCodeName('000001', '083', CmPayTermCd) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ20') CmPayTermCd_KZ20
+
+        ,(SELECT VrAcntNo FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ30') VrAcntNo_KZ30
+        ,(SELECT dbo.fn_getCodeName('000001', '020', CmBankCd) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ30') CmBankCd_KZ30
+        ,(SELECT SaverName FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ30') SaverNameK_Z30
+        ,(SELECT dbo.fn_decryptString(AcntNo) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ30') AcntNo_KZ30
+        ,(SELECT dbo.fn_getCodeName('000001', '083', CmPayTermCd) FROM Ct_CustAccount WHERE CustCd = t1.CustCd AND CompCd = 'KZ30') CmPayTermCd_KZ30
+        FROM [Ct_CustCode] t1
+        WHERE
+        1=1
+
+
+        <if test="C_CustCd != null and !C_CustCd.equals('')">
+            and t1.CustCd = #{C_CustCd}
+        </if>
+
+    </select>
+
+</mapper>

@@ -1,0 +1,230 @@
+@charset "UTF-8";
+
+* {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Lora', serif;
+    font-family: 'Noto Sans KR', sans-serif;
+
+}
+
+ul, ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none
+}
+
+a:link {
+    color:#2b2b2b;
+    cursor:pointer;
+}
+
+body {
+    font-size:1em;
+    color:#000;
+}
+
+.top_menu {
+    width:100%;
+    height:60px;
+}
+
+.logo {
+    margin-top:20px;
+    margin-left:30px;
+    float:left;
+}
+
+.top_right_menu {
+    float:right;
+    margin-right:30px;
+    margin-top:20px;
+}
+
+.left_menu {
+    margin-top:5px;
+    margin-left:30px;
+    float:left;
+    height:500px;
+    width:200px;
+    border-right:1px solid #ddd;
+
+}
+
+.main_wrap {
+    margin-top:5px;
+    height:100%;
+    margin-left:270px;
+    min-height:500px;
+}
+
+.data_table {
+    margin-top:40px;
+}
+
+.disp_inline {
+    display:inline-block;
+}
+
+.form_input {
+    margin-left:10px;
+}
+
+td {
+    font-size:0.8rem;
+    color:#333;
+    padding-top:1px;
+    padding-bottom:0px;
+    padding-left:2px;
+    padding-right:2px;
+}
+
+th {
+
+    font-size:0.8rem;
+    color:#333
+}
+
+.form_input > label {
+    font-size:0.8rem;
+    color:#888
+}
+.form_input > span {
+    font-size:0.8rem;
+    color:#333;
+}
+
+.form_input > input[type=text] {
+    width:80px;
+}
+
+.last_inline {
+    margin-right:10px;
+}
+
+.searchForm {
+    border-top:1px solid #eaeaea;
+    padding-top:10px;
+    margin-top:20px;
+    border-bottom:1px solid #eaeaea;
+    padding-bottom:10px;
+    width:1300px;
+}
+
+.searchGridBtn {
+    width:80px;
+    height:24px;
+}
+
+.main_content_wrap {
+    width:100%;
+    overflow-x:hidden;
+}
+
+.main_content_wrap:after {
+    clear:both;
+    display:block;
+    content: '';
+}
+
+.box_wrapper {
+    font-size:0.8rem;
+    color:#333
+}
+
+.box_wrapper > table {
+    font-size:0.8rem;
+    color:#333
+}
+
+.box_wrapper > table > tbody > tr > td {
+    font-size:0.8rem;
+    color:#333
+}
+.box_wrapper > table > tbody > tr > th {
+    font-size:0.8rem;
+    color:#333
+}
+
+input[type=text] {
+    height:20px;
+    background-color:#fff;
+    border:solid 1px #aaa;
+}
+
+input.required {
+    border:solid 1px red;
+}
+
+input[type=button] {
+    height:18px;
+}
+input[type=submit] {
+    height:18px;
+}
+select {
+    height:20px;
+}
+
+button[type=button] {
+    font-size:0.8rem;
+    color:#111;
+    cursor:pointer;
+}
+#box_wrapper_table td {
+    padding-top:4px;
+    padding-bottom:2px;
+}
+
+#loading {
+    height: 100%;
+    left: 0px;
+    position: fixed;
+    _position: absolute;
+    top: 0px;
+    width: 100%;
+    filter: alpha(opacity = 50);
+    -moz-opacity: 0.5;
+    opacity: 0.5;
+}
+.loading {
+    background-color: white;
+    z-index: 999999;
+}
+#loading_img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 200px;
+    margin-top: -75px;
+    margin-left: -75px;
+    z-index: 999999;
+}
+#loading_img_small {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 70px;
+    margin-top: -35px;
+    margin-left: -35px;
+    z-index: 999999;
+}
+
+input[readonly=readonly] {
+    background-color:#eee;
+    border:solid 1px #e1e1e1;
+}
+
+button.wide {
+    width:100px;
+}
+
+.ui-jqgrid-btable tbody > tr > td {
+    cursor:pointer;
+}
+
+td.required {
+    color:red;
+}
